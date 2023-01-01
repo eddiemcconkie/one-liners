@@ -1,2 +1,21 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script lang="ts">
+	import { browser } from '$app/environment';
+	import Recorder from './Recorder.svelte';
+
+	let streamPromise: Promise<MediaStream>;
+
+	if (browser) {
+		streamPromise = navigator.mediaDevices.getUserMedia({
+			video: true,
+			audio: true
+		});
+	}
+</script>
+
+{#if browser}
+	{#await streamPromise then stream}
+		<Recorder {stream} />
+	{:catch}
+		You need to enable your camera
+	{/await}
+{/if}
